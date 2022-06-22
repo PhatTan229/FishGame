@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Food : MonoBehaviour
+public class Food : Cake
 {
     [SerializeField] private SpriteRenderer sprite;
     [SerializeField] private float spawnTime;
     public float stepSize;
-    
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))

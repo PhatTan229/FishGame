@@ -19,6 +19,10 @@ public class Enemy : Cake
         txtSize = transform.GetChild(0).GetComponent<TextMeshPro>();
 
         ChangeDestination();
+
+        size = Random.Range(1f, 2f);
+        transform.localScale = new Vector3(size, size);
+        txtSize.text = size.ToString();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

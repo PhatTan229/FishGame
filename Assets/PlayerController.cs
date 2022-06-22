@@ -31,6 +31,7 @@ public class PlayerController : Cake
         cameraHeight = mainCamera.orthographicSize;
         cameraWidth = cameraHeight * mainCamera.aspect;
 
+        size = 0.3f;
         txtSize.text = size.ToString();
         transform.localScale = new Vector3(size, size);
     }
@@ -86,9 +87,15 @@ public class PlayerController : Cake
 
     public void EatOtherCake(Enemy otherCake)
     {
-        size += otherCake.Size / 4;
-        transform.localScale = new Vector3(size, size);
-        txtSize.text = size.ToString();
+        if (size >= otherCake.Size)
+        {
+            size += otherCake.Size / 4;
+            transform.localScale = new Vector3(size, size);
+            txtSize.text = size.ToString();
+        } else
+        {
+            Die();
+        }
     }
 
     public void Die()
