@@ -6,6 +6,8 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private Joystick joystick;
     [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private GameObject bigEnemyThink;
+    [SerializeField] private GameObject mediumEnemyThink;
     public Size size;
 
     public UnityEvent onDie;
@@ -23,6 +25,8 @@ public class PlayerController : MonoBehaviour
         cameraHeight = mainCamera.orthographicSize;
         cameraWidth = cameraHeight * mainCamera.aspect;
         rb = GetComponent<Rigidbody2D>();
+        bigEnemyThink.SetActive(false);
+        mediumEnemyThink.SetActive(false);
     }
     void Update()
     {
@@ -35,16 +39,36 @@ public class PlayerController : MonoBehaviour
         if (transform.localScale.x >= 1)
         {
             size = Size.MEDIUM;
+            if(mediumEnemyThink != null)
+            {
+                mediumEnemyThink.SetActive(true);
+                Destroy(mediumEnemyThink, 3f);
+            }            
         }
         if (transform.localScale.x >= 1.5)
         {
             size = Size.BIG;
+            if(bigEnemyThink != null)
+            {
+                bigEnemyThink.SetActive(true);
+                Destroy(bigEnemyThink, 3f);
+            }        
         }
     }
 
     private void Move()
     {
         rb.velocity = new Vector2(joystick.Horizontal, joystick.Vertical) * speed;
+        var facing = transform.rotation;
+        if(joystick.Horizontal < 0)
+        {
+            facing.y = 180;
+        }
+        if (joystick.Horizontal > 0)
+        {
+            facing.y = 0;
+        }
+        transform.rotation = facing;
     }
     public void GrowUp(float step)
     {

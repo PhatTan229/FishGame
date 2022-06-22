@@ -114,4 +114,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sprite: {fileID: 3597259233123580075}
   spawnTime: 1
-  stepSize: 0.005
+  stepSize: 0.05

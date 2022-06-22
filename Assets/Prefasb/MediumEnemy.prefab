@@ -131,7 +131,7 @@ MonoBehaviour:
   patrolPoint: {fileID: 2407274334638471329}
   sprite: {fileID: 0}
   speed: 1
-  stepSize: 0
+  stepSize: 0.1
   spawnTime: 3
 --- !u!61 &175564190572483434
 BoxCollider2D:
