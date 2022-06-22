@@ -2,65 +2,45 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-public class PlayerController : MonoBehaviour
+
+public class PlayerController : Cake
 {
-    [SerializeField] private Joystick joystick;
-    [SerializeField] private Rigidbody2D rb;
-    [SerializeField] private GameObject bigEnemyThink;
-    [SerializeField] private GameObject mediumEnemyThink;
-    public Size size;
-
-    public UnityEvent onDie;
-    
-    public float speed;
-
+    private Joystick joystick;
+    private Rigidbody2D rb;
     private Camera mainCamera;
+    private Vector2 lastDirection;
+
+    private float speed = 5;
     private float cameraWidth;
     private float cameraHeight;
 
     private void Start()
     {
-        size = Size.TINY;
+        rb = GetComponent<Rigidbody2D>();
+        joystick = FindObjectOfType<Joystick>();
         mainCamera = Camera.main;
         cameraHeight = mainCamera.orthographicSize;
         cameraWidth = cameraHeight * mainCamera.aspect;
-        rb = GetComponent<Rigidbody2D>();
-        bigEnemyThink.SetActive(false);
-        mediumEnemyThink.SetActive(false);
     }
+
     void Update()
     {
-        transform.position = new Vector3(Mathf.Clamp(transform.position.x, -cameraWidth, cameraWidth), Mathf.Clamp(transform.position.y, -cameraHeight, cameraHeight));
         Move();
-        if(transform.localScale.x >= 0.5)
-        {
-            size = Size.SMALL;
-        }
-        if (transform.localScale.x >= 1)
-        {
-            size = Size.MEDIUM;
-            if(mediumEnemyThink != null)
-            {
-                mediumEnemyThink.SetActive(true);
-                Destroy(mediumEnemyThink, 3f);
-            }            
-        }
-        if (transform.localScale.x >= 1.5)
-        {
-            size = Size.BIG;
-            if(bigEnemyThink != null)
-            {
-                bigEnemyThink.SetActive(true);
-                Destroy(bigEnemyThink, 3f);
-            }        
-        }
     }
 
     private void Move()
     {
-        rb.velocity = new Vector2(joystick.Horizontal, joystick.Vertical) * speed;
+        float x = Mathf.Clamp(transform.position.x, -cameraWidth, cameraWidth);
+        float y = Mathf.Clamp(transform.position.y, -cameraHeight, cameraHeight);
+        transform.position = new Vector3(x, y);
+        rb.velocity = joystick.Direction.normalized * speed;
+        if (joystick.Direction != Vector2.zero)
+        {
+            lastDirection = joystick.Direction;
+        }
+
         var facing = transform.rotation;
-        if(joystick.Horizontal < 0)
+        if (joystick.Horizontal < 0)
         {
             facing.y = 180;
         }
@@ -70,17 +50,23 @@ public class PlayerController : MonoBehaviour
         }
         transform.rotation = facing;
     }
+
     public void GrowUp(float step)
     {
-        if(transform.localScale.x < 1.5)
+        if (transform.localScale.x < 1.5)
         {
             transform.localScale += new Vector3(step, step, step);
-        }       
+        }
     }
 
     public void Die()
     {
-        if (onDie != null) onDie.Invoke();
-        gameObject.SetActive(false);       
+        GameFlow.Instance.ShowGameOver();
+        gameObject.SetActive(false);
+    }
+
+    public void Dash()
+    {
+        rb.AddForce(lastDirection.normalized * 2000);
     }
 }
