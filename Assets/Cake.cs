@@ -4,6 +4,6 @@ using UnityEngine;
 
 public class Cake : MonoBehaviour
 {
-    public int Size => size;
-    protected int size = 1;
+    public float Size => size;
+    protected float size = 1;
 }

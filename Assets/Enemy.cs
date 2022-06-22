@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class Enemy : Cake
 {
     private SpriteRenderer sprite;
     private Vector2 destination;
 
+    TextMeshPro txtSize;
     float speed = Constants.PLAYER_SPEED;
     float stepSize;
     float spawnTime;
@@ -14,6 +16,8 @@ public class Enemy : Cake
     void Start()
     {
         sprite = GetComponent<SpriteRenderer>();
+        txtSize = transform.GetChild(0).GetComponent<TextMeshPro>();
+
         ChangeDestination();
     }
 

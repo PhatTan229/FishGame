@@ -2,14 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using TMPro;
 
 public class PlayerController : Cake
 {
     public float Stamina => stamina;
 
+    private SpriteRenderer playerAnim;
     private Joystick joystick;
     private Rigidbody2D rb;
     private Camera mainCamera;
+    private TextMeshPro txtSize;
+
     public Vector2 lastDirection;
 
     float cameraWidth;
@@ -19,11 +23,16 @@ public class PlayerController : Cake
 
     private void Start()
     {
+        playerAnim = gameObject.GetChildComponent<SpriteRenderer>("playerAnim");
         rb = GetComponent<Rigidbody2D>();
         joystick = FindObjectOfType<Joystick>();
+        txtSize = transform.GetChild(0).GetComponent<TextMeshPro>();
         mainCamera = Camera.main;
         cameraHeight = mainCamera.orthographicSize;
         cameraWidth = cameraHeight * mainCamera.aspect;
+
+        txtSize.text = size.ToString();
+        transform.localScale = new Vector3(size, size);
     }
 
     void Update()
@@ -64,23 +73,22 @@ public class PlayerController : Cake
         {
             facing.y = 0;
         }
-        transform.rotation = facing;
+        playerAnim.transform.rotation = facing;
     }
 
     public void EatCandy(Food food)
     {
-        float step = food.stepSize;
-        transform.localScale += new Vector3(step, step, step);
+        size += food.stepSize;
+        transform.localScale = new Vector3(size, size);
         stamina += 1f;
+        txtSize.text = size.ToString();
     }
 
     public void EatOtherCake(Enemy otherCake)
     {
-        float step = otherCake.Size / 4;
-        if (transform.localScale.x < 1.5)
-        {
-            transform.localScale += new Vector3(step, step, step);
-        }
+        size += otherCake.Size / 4;
+        transform.localScale = new Vector3(size, size);
+        txtSize.text = size.ToString();
     }
 
     public void Die()
