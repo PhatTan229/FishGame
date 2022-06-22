@@ -5,14 +5,17 @@ using UnityEngine.Events;
 
 public class PlayerController : Cake
 {
+    public float Stamina => stamina;
+
     private Joystick joystick;
     private Rigidbody2D rb;
     private Camera mainCamera;
-    private Vector2 lastDirection;
+    public Vector2 lastDirection;
 
-    private float speed = 5;
-    private float cameraWidth;
-    private float cameraHeight;
+    float cameraWidth;
+    float cameraHeight;
+    bool isDashing = false;
+    float stamina = Constants.MAX_STAMINA;
 
     private void Start()
     {
@@ -33,7 +36,20 @@ public class PlayerController : Cake
         float x = Mathf.Clamp(transform.position.x, -cameraWidth, cameraWidth);
         float y = Mathf.Clamp(transform.position.y, -cameraHeight, cameraHeight);
         transform.position = new Vector3(x, y);
-        rb.velocity = joystick.Direction.normalized * speed;
+
+        if (isDashing)
+        {
+            stamina -= Constants.DECREASE_STAMINA_SPEED * Time.deltaTime;
+            if (stamina < 0) stamina = 0;
+            else
+            {
+                rb.velocity = joystick.Direction.normalized * Constants.PLAYER_SPEED * Constants.PLAYER_DASH_SPEED_RATIO;
+            }
+        } else
+        {
+            rb.velocity = joystick.Direction.normalized * Constants.PLAYER_SPEED;
+        }
+
         if (joystick.Direction != Vector2.zero)
         {
             lastDirection = joystick.Direction;
@@ -51,8 +67,16 @@ public class PlayerController : Cake
         transform.rotation = facing;
     }
 
-    public void GrowUp(float step)
+    public void EatCandy(Food food)
     {
+        float step = food.stepSize;
+        transform.localScale += new Vector3(step, step, step);
+        stamina += 1f;
+    }
+
+    public void EatOtherCake(Enemy otherCake)
+    {
+        float step = otherCake.Size / 4;
         if (transform.localScale.x < 1.5)
         {
             transform.localScale += new Vector3(step, step, step);
@@ -67,6 +91,17 @@ public class PlayerController : Cake
 
     public void Dash()
     {
-        rb.AddForce(lastDirection.normalized * 2000);
+        Debug.Log("This is dash");
+        rb.AddForce(lastDirection.normalized * Constants.DASH_FORCE);
+    }
+
+    public void DashButtonDown()
+    {
+        isDashing = true;
+    }
+
+    public void DashButtonUp()
+    {
+        isDashing = false;
     }
 }

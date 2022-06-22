@@ -7,7 +7,7 @@ public class Enemy : Cake
     private SpriteRenderer sprite;
     private Vector2 destination;
 
-    float speed;
+    float speed = Constants.PLAYER_SPEED;
     float stepSize;
     float spawnTime;
 
@@ -25,7 +25,7 @@ public class Enemy : Cake
             {
                 if (player.Size >= size)
                 {
-                    player.GrowUp(stepSize);
+                    player.EatOtherCake(this);
                     StartCoroutine(ResetPosition());
                 }
                 else

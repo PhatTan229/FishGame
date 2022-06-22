@@ -13,7 +13,7 @@ public class Food : MonoBehaviour
         if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
             collision.TryGetComponent<PlayerController>(out var player);
-            player.GrowUp(stepSize);
+            player.EatCandy(this);
             StartCoroutine(ResetPosition());
         }
     }
