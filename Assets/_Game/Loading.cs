@@ -26,7 +26,7 @@ public class Loading : MonoBehaviour
         if (imgLoading.fillAmount >= 1f) {
             if (finish) return;
             finish = true;
-            SceneManager.LoadScene("Gameplay");
+            SceneManager.LoadScene("MainMenu");
         }
     }
 }
