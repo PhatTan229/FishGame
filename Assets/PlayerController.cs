@@ -64,17 +64,8 @@ public class PlayerController : Cake
         {
             lastDirection = joystick.Direction;
         }
-
-        var facing = transform.rotation;
-        if (joystick.Horizontal < 0)
-        {
-            facing.y = 180;
-        }
-        if (joystick.Horizontal > 0)
-        {
-            facing.y = 0;
-        }
-        playerAnim.transform.rotation = facing;
+        CheckFacing();
+        
     }
 
     public void EatCandy(Food food)
@@ -118,5 +109,18 @@ public class PlayerController : Cake
     public void DashButtonUp()
     {
         isDashing = false;
+    }
+    protected override void CheckFacing()
+    {
+        var facing = transform.rotation;
+        if (joystick.Horizontal < 0)
+        {
+            facing.y = 180;
+        }
+        if (joystick.Horizontal > 0)
+        {
+            facing.y = 0;
+        }
+        playerAnim.transform.rotation = facing;
     }
 }

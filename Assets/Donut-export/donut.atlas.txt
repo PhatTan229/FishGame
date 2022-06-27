@@ -1,0 +1,18 @@
+donut.png
+size:1024,1024
+filter:Linear,Linear
+pma:true
+body
+bounds:2,385,511,587
+offsets:0,0,511,593
+eyes close
+bounds:351,2,381,146
+rotate:90
+eyes open
+bounds:188,2,381,161
+rotate:90
+mouth close
+bounds:499,141,219,242
+offsets:0,0,220,242
+mouth open
+bounds:2,25,184,358

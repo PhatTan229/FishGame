@@ -2,12 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-
+using Spine.Unity;
+enum State
+{
+    RUN, ATTACK
+}
 public class Enemy : Cake
 {
     private SpriteRenderer sprite;
     private Vector2 destination;
-
+    [SerializeField] Animator anim;
     TextMeshPro txtSize;
     float speed = Constants.PLAYER_SPEED;
     float stepSize;
@@ -16,15 +20,15 @@ public class Enemy : Cake
     void Start()
     {
         sprite = GetComponent<SpriteRenderer>();
-        txtSize = transform.GetChild(0).GetComponent<TextMeshPro>();
-
+        //txtSize = transform.GetChild(0).GetComponent<TextMeshPro>();
+        anim = GetComponent<Animator>();
         ChangeDestination();
 
         size = Random.Range(1f, 2f);
         transform.localScale = new Vector3(size, size);
-        txtSize.text = size.ToString();
+        //txtSize.text = size.ToString();
     }
-
+    
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
@@ -38,7 +42,8 @@ public class Enemy : Cake
                 }
                 else
                 {
-                    player.Die();
+                    anim.SetTrigger("Attack");
+                    player.Die();                   
                 }
             }
         }
@@ -46,11 +51,16 @@ public class Enemy : Cake
 
     void Update()
     {
-        transform.position = Vector2.MoveTowards(transform.position, destination, speed * Time.deltaTime);
+        Move();
         if (Vector2.Distance(transform.position, destination) <= 0)
         {
             ChangeDestination();
         }
+    }
+
+    private void Move()
+    {
+        transform.position = Vector2.MoveTowards(transform.position, destination, speed * Time.deltaTime);
     }
 
     private void ChangeDestination()
@@ -61,6 +71,7 @@ public class Enemy : Cake
         float x = Random.Range(bottomLeft.x, topRight.x);
         float y = Random.Range(bottomLeft.y, topRight.y);
         destination = new Vector2(x, y);
+        CheckFacing();
     }
 
     private IEnumerator ResetPosition()
@@ -81,5 +92,18 @@ public class Enemy : Cake
 
         transform.position = new Vector2(x, y);
         StopCoroutine(ResetPosition());
+    }
+    protected override void CheckFacing()
+    {
+        var facing = transform.rotation;
+        if(destination.x > transform.position.x)
+        {
+            facing.y = 0;
+        }
+        if(destination.x < transform.position.x)
+        {
+            facing.y = 180;
+        }
+        transform.rotation = facing;
     }
 }

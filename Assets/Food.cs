@@ -34,4 +34,9 @@ public class Food : Cake
         transform.position = newPosition;
         StopCoroutine(ResetPosition());
     }
+
+    protected override void CheckFacing()
+    {
+        throw new System.NotImplementedException();
+    }
 }
