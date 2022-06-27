@@ -5,9 +5,9 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class GameFlow : MonoBehaviour
+public class Gameplay : MonoBehaviour
 {
-    public static GameFlow Instance;
+    public static Gameplay Instance;
 
     [SerializeField] GameObject canvasGameplay;
 

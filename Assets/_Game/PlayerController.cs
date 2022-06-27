@@ -91,7 +91,7 @@ public class PlayerController : Cake
 
     public void Die()
     {
-        GameFlow.Instance.ShowGameOver();
+        Gameplay.Instance.ShowGameOver();
         gameObject.SetActive(false);
     }
 
