@@ -4,6 +4,8 @@ using UnityEngine;
 
 public static class Constants
 {
+    public const float ONLINE_MATCHING_TIME = 3f;
+
     //player
     public const float DASH_FORCE = 100;
     public const float MAX_STAMINA = 5;

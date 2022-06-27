@@ -13,20 +13,21 @@ public class MainMenu : MonoBehaviour
     [SerializeField] GameObject canvas;
 
     GameObject popupMain;
-    GameObject popupMatching;
+    PopupMatching popupMatching;
     GameObject middleGroup;
 
     Button btnPlay;
 
     private void Awake() {
+        popupMatching = canvas.GetChildComponent<PopupMatching>("popupMatching");
         popupMain = canvas.GetChildComponent<GameObject>("popupMain");
-        popupMatching = canvas.GetChildComponent<GameObject>("popupMatching");
         middleGroup = popupMain.GetChildComponent<GameObject>("middleGroup");
 
         btnPlay = popupMain.GetChildComponent<Button>("btnPlay");
-
         btnPlay.onClick.AddListener(Play);
-        popupMatching.SetActive(false);
+
+        //popupMatching.gameObject.SetActive(false);
+        //popupMain.gameObject.SetActive(true);
     }
 
     public void Play() {
@@ -38,6 +39,7 @@ public class MainMenu : MonoBehaviour
         //popupMatching.transform.DOMoveX(0, 1f);
         popupMain.gameObject.SetActive(false);
         popupMatching.gameObject.SetActive(true);
+        popupMatching.StartMatching();
 
         GameSystem.DelayCall(2f, () => {
             SceneManager.LoadScene("Gameplay");
