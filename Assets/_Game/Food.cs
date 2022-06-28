@@ -37,6 +37,11 @@ public class Food : Cake
 
     protected override void CheckFacing()
     {
-        throw new System.NotImplementedException();
+
+    }
+
+    public override void Eat(Cake whatToEat)
+    {
+
     }
 }

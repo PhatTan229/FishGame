@@ -129,9 +129,17 @@ public class PlayerController : Cake
         transform.localScale = new Vector3(size, size);
 
         int sizeDisplay = (int)(size * 100);
-        //txtName.text = sizeDisplay.ToString();
-        //float ratio = size / Constants.MAX_PLAYER_SIZE;
-        //float cameraSize = Mathf.Lerp(Constants.CAMERA_MIN_SIZE, Constants.CAMERA_MAX_SIZE, ratio);
-        //mainCamera.orthographicSize = cameraSize;
+        txtSize.text = sizeDisplay.ToString();
+    }
+
+    public override void Eat(Cake whatToEat)
+    {
+        IncreaseSize(whatToEat.Size / 4);
+        playerAnim.Play("Attack", -1, normalizedTime: 0f);
+        GameSystem.DelayCall(Constants.EAT_TIME, () =>
+        {
+            if (whatToEat.gameObject != null)
+                whatToEat.gameObject.SetActive(false);
+        });
     }
 }

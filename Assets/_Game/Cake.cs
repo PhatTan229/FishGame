@@ -9,5 +9,5 @@ public abstract class Cake : MonoBehaviour
     protected float size = 1;
     
     protected abstract void CheckFacing();
-
+    public abstract void Eat(Cake whatToEat);
 }

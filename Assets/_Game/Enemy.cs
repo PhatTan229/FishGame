@@ -5,33 +5,38 @@ using TMPro;
 using Spine.Unity;
 enum State
 {
-    Wandering, ChaseEnemy, RunAway
+    Wandering, ChaseEnemy, RunAway, ChasePlayer
 }
 
 public class Enemy : Cake
 {
     public Cake beingChased;
 
-    private SpriteRenderer sprite;
-    private Vector2 destination;
+    List<string> eatableTags;
+
+    Animator anim;
+    TextMeshPro txtName;
+    TextMeshPro txtState;
+    PlayerController player;
+    Rigidbody2D rb2d;
+    State state;
+    Vector2 destination;
 
     float speed = Constants.PLAYER_SPEED;
     float stepSize;
     float spawnTime;
     float activeTime;
-
-    Animator anim;
-    TextMeshPro txtName;
-    PlayerController player;
-    Rigidbody2D rb2d;
+    float nextChangeState;
 
     private void Awake()
     {
-        sprite = GetComponent<SpriteRenderer>();
         anim = gameObject.GetChildComponent<Animator>("skeletonAnim");
         txtName = gameObject.GetChildComponent<TextMeshPro>("txtName");
+        txtState = gameObject.GetChildComponent<TextMeshPro>("txtState");
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
         rb2d = GetComponent<Rigidbody2D>();
+
+        eatableTags = new List<string>() { Constants.TAG_CAKE, Constants.TAG_CANDY, Constants.TAG_PLAYER };
     }
 
     void Start()
@@ -47,76 +52,102 @@ public class Enemy : Cake
     
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag(Constants.TAG_PLAYER)) CollidePlayer(collision);
-        else if (collision.CompareTag(Constants.TAG_CANDY)) CollideCandy(collision);
-        else if (collision.CompareTag(Constants.TAG_CAKE)) CollideOtherCake(collision);
-    }
-
-    void CollidePlayer(Collider2D collision)
-    {
-        if (player.Size >= size)
-        {
-            player.EatOtherCake(this);
-            //StartCoroutine(ResetPosition());
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Cake")){
+            var cake = collision.GetComponent<Cake>();
+            if (size > cake.Size) Eat(cake);
+            else cake.Eat(this);
         }
-        else
-        {
-            anim.Play("Attack", -1, normalizedTime: 0f);
-
-            GameSystem.DelayCall(Constants.EAT_TIME, () =>
-            {
-                player.Die();
-            });
-        }
+        //if (collision.CompareTag(Constants.TAG_PLAYER)) CollidePlayer(collision);
+        //else if (collision.CompareTag(Constants.TAG_CANDY)) CollideCandy(collision);
+        //else if (collision.CompareTag(Constants.TAG_CAKE)) CollideOtherCake(collision);
     }
 
-    void CollideOtherCake(Collider2D collision)
-    {
-        anim.Play("Attack", -1, normalizedTime: 0f);
-        var food = collision.GetComponent<Food>();
+    //void CollidePlayer(Collider2D collision)
+    //{
+    //    if (player.Size >= size)
+    //    {
+    //        player.EatOtherCake(this);
+    //        //StartCoroutine(ResetPosition());
+    //    }
+    //    else
+    //    {
+    //        anim.Play("Attack", -1, normalizedTime: 0f);
 
-        IncreaseSize(Random.Range(0.75f, 1.25f) * food.stepSize);
-        GameSystem.DelayCall(Constants.EAT_TIME, () =>
-        {
-            if (collision != null && collision.gameObject != null)
-                collision.gameObject.SetActive(false);
-        });
-    }
+    //        GameSystem.DelayCall(Constants.EAT_TIME, () =>
+    //        {
+    //            player.Die();
+    //        });
+    //    }
+    //}
 
-    void CollideCandy(Collider2D collision)
-    {
-        var enemy = collision.GetComponent<Enemy>();
+    //void CollideCandy(Collider2D collision)
+    //{
+    //    anim.Play("Attack", -1, normalizedTime: 0f);
+    //    var food = collision.GetComponent<Food>();
 
-        if (size > enemy.size)
-        {
-            //anim.SetTrigger("Attack");
-            anim.Play("Attack", -1, normalizedTime: 0f);
+    //    IncreaseSize(Random.Range(0.75f, 1.25f) * food.stepSize);
+    //    GameSystem.DelayCall(Constants.EAT_TIME, () =>
+    //    {
+    //        if (collision != null && collision.gameObject != null)
+    //            collision.gameObject.SetActive(false);
+    //    });
+    //}
 
-            IncreaseSize(enemy.size / 4);
-            GameSystem.DelayCall(Constants.EAT_TIME, () =>
-            {
-                if (collision.gameObject != null)
-                    collision.gameObject.SetActive(false);
-            });
-        }
-    }
+    //void CollideOtherCake(Collider2D collision)
+    //{
+
+    //    //var enemy = collision.GetComponent<Enemy>();
+
+    //    //if (size > enemy.size)
+    //    //{
+    //    //    //anim.SetTrigger("Attack");
+    //    //    anim.Play("Attack", -1, normalizedTime: 0f);
+
+    //    //    IncreaseSize(enemy.size / 4);
+    //    //    GameSystem.DelayCall(Constants.EAT_TIME, () =>
+    //    //    {
+    //    //        if (collision.gameObject != null)
+    //    //            collision.gameObject.SetActive(false);
+    //    //    });
+    //    //}
+    //}
 
     void Update()
     {
         anim.enabled = Time.time > activeTime;
+        if (Time.time > nextChangeState)
+        {
+            nextChangeState = Time.time + Random.Range(3f, 5f);
+            state = (State)(Random.Range(0, 3));
+            txtState.text = state.ToString();
+        }
 
         if (Vector2.Distance(transform.position, destination) <= 2f)
         {
             ChangeDestination();
         }
 
-        if (player != null && Vector2.Distance(transform.position, player.transform.position) < 3f)
+        if (Vector2.Distance(transform.position, player.transform.position) <= 5f)
         {
-            rb2d.velocity = -(player.transform.position - transform.position).normalized;
-        } else
-        {
-            rb2d.velocity = (destination - (Vector2)transform.position).normalized;
+            if (size > player.Size) state = State.ChasePlayer;
+            else state = State.RunAway;
         }
+
+        rb2d.velocity = (destination - (Vector2)transform.position).normalized;
+        //switch (state)
+        //{
+        //    case State.Wandering:
+        //        rb2d.velocity = (destination - (Vector2)transform.position).normalized;
+        //        break;
+        //    case State.RunAway:
+        //        rb2d.velocity = -(player.transform.position - transform.position).normalized;
+        //        break;
+        //    case State.ChaseEnemy:
+        //        rb2d.velocity = (destination - (Vector2)transform.position).normalized;
+        //        //speed = 2f;
+        //        break;
+        //}
+        CheckFacing();
     }
 
     private void ChangeDestination()
@@ -124,18 +155,15 @@ public class Enemy : Cake
         float spawnX = Random.Range(-20, 20);
         float spawnY = Random.Range(-20, 20);
         destination = new Vector2(spawnX, spawnY);
-        CheckFacing();
     }
 
     private IEnumerator ResetPosition()
     {
         stepSize = 0;
-        sprite.enabled = false;
         var temptStepSize = stepSize;
 
         yield return new WaitForSeconds(spawnTime);
         stepSize = temptStepSize;
-        sprite.enabled = true;
 
         Vector2 bottomLeft = Camera.main.ScreenToWorldPoint(new Vector2(0, 0));
         Vector2 topRight = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
@@ -149,29 +177,33 @@ public class Enemy : Cake
     protected override void CheckFacing()
     {
         var facing = anim.transform.rotation;
-        if (destination.x > transform.position.x)
-        {
-            facing.y = 0;
-        }
-        if (destination.x < transform.position.x)
-        {
-            facing.y = 180;
-        }
+        if (rb2d.velocity.x > 0) facing.y = 0;
+        if (rb2d.velocity.x < 0) facing.y = 180;
         anim.transform.rotation = facing;
     }
 
     public void IncreaseSize(float increase)
     {
         size += increase;
-
         if (size > Constants.MAX_PLAYER_SIZE) size = Constants.MAX_PLAYER_SIZE;
-
         transform.localScale = new Vector3(size, size);
-
         int sizeDisplay = (int)(size * 100);
         txtName.text = sizeDisplay.ToString();
-        //float ratio = size / Constants.MAX_PLAYER_SIZE;
-        //float cameraSize = Mathf.Lerp(Constants.CAMERA_MIN_SIZE, Constants.CAMERA_MAX_SIZE, ratio);
-        //mainCamera.orthographicSize = cameraSize;
+    }
+
+    public override void Eat(Cake whatToEat)
+    {
+        IncreaseSize(whatToEat.Size / 4);
+        anim.Play("Attack", -1, normalizedTime: 0f);
+        GameSystem.DelayCall(Constants.EAT_TIME, () =>
+        {
+            if (whatToEat.gameObject != null)
+                whatToEat.gameObject.SetActive(false);
+
+            if (whatToEat.CompareTag(Constants.TAG_PLAYER))
+            {
+                Gameplay.Instance.ShowGameOver();
+            }
+        });
     }
 }

@@ -503,7 +503,7 @@ GameObject:
   - component: {fileID: 5155957382053364171}
   - component: {fileID: 8451680560430700456}
   - component: {fileID: 1954904023}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Enemy
   m_TagString: Cake
   m_Icon: {fileID: 0}

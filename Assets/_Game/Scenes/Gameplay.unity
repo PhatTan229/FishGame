@@ -371,7 +371,7 @@ MonoBehaviour:
   maxFoodInScreen: 50
   bigEnemyPrefabs: {fileID: 2112703927439093716, guid: b070b46bbe5391b4983b97a325a4bf3e, type: 3}
   smallEnemyPrefabs: {fileID: 2112703927439093716, guid: b070b46bbe5391b4983b97a325a4bf3e, type: 3}
-  maxEnemyInScreen: 50
+  maxEnemyInScreen: 70
 --- !u!4 &111972660
 Transform:
   m_ObjectHideFlags: 0
@@ -2333,7 +2333,7 @@ GameObject:
   - component: {fileID: 1627210982}
   - component: {fileID: 1627210983}
   - component: {fileID: 1627210984}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: player
   m_TagString: Player
   m_Icon: {fileID: 0}
