@@ -8,6 +8,6 @@ public abstract class Cake : MonoBehaviour
     public float Size => size;
     protected float size = 1;
     
-
     protected abstract void CheckFacing();
+
 }

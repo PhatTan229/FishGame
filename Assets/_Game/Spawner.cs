@@ -22,10 +22,13 @@ public class Spawner : MonoBehaviour
     {
         for (int i = 0; i < maxFoodInScreen; i++)
         {
-            float spawnY = Random.Range
-                    (Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).y, Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height)).y);
-            float spawnX = Random.Range
-                (Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).x, Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x);
+            //float spawnY = Random.Range
+            //        (Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).y, Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height)).y);
+            //float spawnX = Random.Range
+            //    (Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).x, Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x);
+
+            float spawnX = Random.Range(-20, 20);
+            float spawnY = Random.Range(-20, 20);
 
             Vector2 spawnPosition = new Vector2(spawnX, spawnY);
 
@@ -37,10 +40,13 @@ public class Spawner : MonoBehaviour
     {
         for (int i = 0; i < maxEnemyInScreen; i++)
         {
-            float spawnY = Random.Range
-                    (Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).y, Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height)).y);
-            float spawnX = Random.Range
-                (Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).x, Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x);
+            //float spawnY = Random.Range
+            //        (Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).y, Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height)).y);
+            //float spawnX = Random.Range
+            //    (Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).x, Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x);
+
+            float spawnX = Random.Range(-20, 20);
+            float spawnY = Random.Range(-20, 20);
 
             Vector2 spawnPosition = new Vector2(spawnX, spawnY);
             var enemyToSpawn = Random.Range(1, 3);

@@ -18,4 +18,10 @@ public static class Constants
     //camera
     public const float CAMERA_MIN_SIZE = 2.5f;
     public const float CAMERA_MAX_SIZE = 5f;
+
+    public const string TAG_CANDY = "Candy";
+    public const string TAG_CAKE = "Cake";
+    public const string TAG_PLAYER = "Player";
+
+    public const float EAT_TIME = 0.2f;
 }

@@ -85,19 +85,6 @@ public class PlayerController : Cake
         }
     }
 
-    public void IncreaseSize(float increase)
-    {
-        size += increase;
-
-        if (size > Constants.MAX_PLAYER_SIZE) size = Constants.MAX_PLAYER_SIZE;
-
-        transform.localScale = new Vector3(size, size);
-
-        float ratio = size / Constants.MAX_PLAYER_SIZE;
-        float cameraSize = Mathf.Lerp(Constants.CAMERA_MIN_SIZE, Constants.CAMERA_MAX_SIZE, ratio);
-        mainCamera.orthographicSize = cameraSize;
-    }
-
     public void Die()
     {
         Gameplay.Instance.ShowGameOver();
@@ -131,5 +118,20 @@ public class PlayerController : Cake
             facing.y = 0;
         }
         playerAnim.transform.rotation = facing;
+    }
+
+    public void IncreaseSize(float increase)
+    {
+        size += increase;
+
+        if (size > Constants.MAX_PLAYER_SIZE) size = Constants.MAX_PLAYER_SIZE;
+
+        transform.localScale = new Vector3(size, size);
+
+        int sizeDisplay = (int)(size * 100);
+        //txtName.text = sizeDisplay.ToString();
+        //float ratio = size / Constants.MAX_PLAYER_SIZE;
+        //float cameraSize = Mathf.Lerp(Constants.CAMERA_MIN_SIZE, Constants.CAMERA_MAX_SIZE, ratio);
+        //mainCamera.orthographicSize = cameraSize;
     }
 }
