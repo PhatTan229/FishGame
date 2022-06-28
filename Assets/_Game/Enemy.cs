@@ -5,10 +5,13 @@ using TMPro;
 using Spine.Unity;
 enum State
 {
-    RUN, ATTACK
+    Wandering, ChaseEnemy, RunAway
 }
+
 public class Enemy : Cake
 {
+    public Cake beingChased;
+
     private SpriteRenderer sprite;
     private Vector2 destination;
 
@@ -18,7 +21,6 @@ public class Enemy : Cake
     float activeTime;
 
     Animator anim;
-    TextMeshPro txtSize;
     TextMeshPro txtName;
     PlayerController player;
     Rigidbody2D rb2d;
@@ -45,54 +47,57 @@ public class Enemy : Cake
     
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag(Constants.TAG_PLAYER))
+        if (collision.CompareTag(Constants.TAG_PLAYER)) CollidePlayer(collision);
+        else if (collision.CompareTag(Constants.TAG_CANDY)) CollideCandy(collision);
+        else if (collision.CompareTag(Constants.TAG_CAKE)) CollideOtherCake(collision);
+    }
+
+    void CollidePlayer(Collider2D collision)
+    {
+        if (player.Size >= size)
         {
-            if (player.Size >= size)
+            player.EatOtherCake(this);
+            //StartCoroutine(ResetPosition());
+        }
+        else
+        {
+            anim.Play("Attack", -1, normalizedTime: 0f);
+
+            GameSystem.DelayCall(Constants.EAT_TIME, () =>
             {
-                player.EatOtherCake(this);
-                //StartCoroutine(ResetPosition());
-            }
-            else
-            {
-                //anim.SetTrigger("Attack");
-                anim.Play("Attack", -1, normalizedTime: 0f);
-                
-                GameSystem.DelayCall(Constants.EAT_TIME, () =>
-                {
-                    //if (collision.gameObject != null)
-                    //    collision.gameObject.SetActive(false);
-                    player.Die();
-                });
-            }
-        } else if (collision.CompareTag(Constants.TAG_CANDY))
+                player.Die();
+            });
+        }
+    }
+
+    void CollideOtherCake(Collider2D collision)
+    {
+        anim.Play("Attack", -1, normalizedTime: 0f);
+        var food = collision.GetComponent<Food>();
+
+        IncreaseSize(Random.Range(0.75f, 1.25f) * food.stepSize);
+        GameSystem.DelayCall(Constants.EAT_TIME, () =>
+        {
+            if (collision != null && collision.gameObject != null)
+                collision.gameObject.SetActive(false);
+        });
+    }
+
+    void CollideCandy(Collider2D collision)
+    {
+        var enemy = collision.GetComponent<Enemy>();
+
+        if (size > enemy.size)
         {
             //anim.SetTrigger("Attack");
             anim.Play("Attack", -1, normalizedTime: 0f);
-            var food = collision.GetComponent<Food>();
-            
-            IncreaseSize(Random.Range(0.75f, 1.25f) * food.stepSize);
+
+            IncreaseSize(enemy.size / 4);
             GameSystem.DelayCall(Constants.EAT_TIME, () =>
             {
-                if (collision != null && collision.gameObject != null)
+                if (collision.gameObject != null)
                     collision.gameObject.SetActive(false);
             });
-        }
-        else if (collision.CompareTag(Constants.TAG_CAKE))
-        {
-            var enemy = collision.GetComponent<Enemy>();
-
-            if (size > enemy.size)
-            {
-                //anim.SetTrigger("Attack");
-                anim.Play("Attack", -1, normalizedTime: 0f);
-                
-                IncreaseSize(enemy.size / 4);
-                GameSystem.DelayCall(Constants.EAT_TIME, () =>
-                {
-                    if (collision.gameObject != null)
-                        collision.gameObject.SetActive(false);
-                });
-            }
         }
     }
 
@@ -100,24 +105,22 @@ public class Enemy : Cake
     {
         anim.enabled = Time.time > activeTime;
 
-        //rb2d.velocity = Vector2.MoveTowards(transform.position, destination, Time.deltaTime).normalized * speed;
-        rb2d.velocity = (destination - (Vector2)transform.position).normalized;
-        //transform.position = Vector2.MoveTowards(transform.position, destination, speed * Time.deltaTime);
-
         if (Vector2.Distance(transform.position, destination) <= 2f)
         {
             ChangeDestination();
+        }
+
+        if (player != null && Vector2.Distance(transform.position, player.transform.position) < 3f)
+        {
+            rb2d.velocity = -(player.transform.position - transform.position).normalized;
+        } else
+        {
+            rb2d.velocity = (destination - (Vector2)transform.position).normalized;
         }
     }
 
     private void ChangeDestination()
     {
-        //Vector2 bottomLeft = Camera.main.ScreenToWorldPoint(new Vector2(0, 0));
-        //Vector2 topRight = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
-
-        //float x = Random.Range(bottomLeft.x, topRight.x);
-        //float y = Random.Range(bottomLeft.y, topRight.y);
-
         float spawnX = Random.Range(-20, 20);
         float spawnY = Random.Range(-20, 20);
         destination = new Vector2(spawnX, spawnY);
