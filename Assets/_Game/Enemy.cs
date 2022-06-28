@@ -57,60 +57,7 @@ public class Enemy : Cake
             if (size > cake.Size) Eat(cake);
             else cake.Eat(this);
         }
-        //if (collision.CompareTag(Constants.TAG_PLAYER)) CollidePlayer(collision);
-        //else if (collision.CompareTag(Constants.TAG_CANDY)) CollideCandy(collision);
-        //else if (collision.CompareTag(Constants.TAG_CAKE)) CollideOtherCake(collision);
     }
-
-    //void CollidePlayer(Collider2D collision)
-    //{
-    //    if (player.Size >= size)
-    //    {
-    //        player.EatOtherCake(this);
-    //        //StartCoroutine(ResetPosition());
-    //    }
-    //    else
-    //    {
-    //        anim.Play("Attack", -1, normalizedTime: 0f);
-
-    //        GameSystem.DelayCall(Constants.EAT_TIME, () =>
-    //        {
-    //            player.Die();
-    //        });
-    //    }
-    //}
-
-    //void CollideCandy(Collider2D collision)
-    //{
-    //    anim.Play("Attack", -1, normalizedTime: 0f);
-    //    var food = collision.GetComponent<Food>();
-
-    //    IncreaseSize(Random.Range(0.75f, 1.25f) * food.stepSize);
-    //    GameSystem.DelayCall(Constants.EAT_TIME, () =>
-    //    {
-    //        if (collision != null && collision.gameObject != null)
-    //            collision.gameObject.SetActive(false);
-    //    });
-    //}
-
-    //void CollideOtherCake(Collider2D collision)
-    //{
-
-    //    //var enemy = collision.GetComponent<Enemy>();
-
-    //    //if (size > enemy.size)
-    //    //{
-    //    //    //anim.SetTrigger("Attack");
-    //    //    anim.Play("Attack", -1, normalizedTime: 0f);
-
-    //    //    IncreaseSize(enemy.size / 4);
-    //    //    GameSystem.DelayCall(Constants.EAT_TIME, () =>
-    //    //    {
-    //    //        if (collision.gameObject != null)
-    //    //            collision.gameObject.SetActive(false);
-    //    //    });
-    //    //}
-    //}
 
     void Update()
     {
@@ -180,15 +127,6 @@ public class Enemy : Cake
         if (rb2d.velocity.x > 0) facing.y = 0;
         if (rb2d.velocity.x < 0) facing.y = 180;
         anim.transform.rotation = facing;
-    }
-
-    public void IncreaseSize(float increase)
-    {
-        size += increase;
-        if (size > Constants.MAX_PLAYER_SIZE) size = Constants.MAX_PLAYER_SIZE;
-        transform.localScale = new Vector3(size, size);
-        int sizeDisplay = (int)(size * 100);
-        txtName.text = sizeDisplay.ToString();
     }
 
     public override void Eat(Cake whatToEat)

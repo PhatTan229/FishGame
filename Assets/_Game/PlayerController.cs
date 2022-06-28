@@ -12,7 +12,6 @@ public class PlayerController : Cake
     private Joystick joystick;
     private Rigidbody2D rb;
     private Camera mainCamera;
-    private TextMeshPro txtSize;
 
     private Vector2 lastDirection;
 
@@ -118,18 +117,6 @@ public class PlayerController : Cake
             facing.y = 0;
         }
         playerAnim.transform.rotation = facing;
-    }
-
-    public void IncreaseSize(float increase)
-    {
-        size += increase;
-
-        if (size > Constants.MAX_PLAYER_SIZE) size = Constants.MAX_PLAYER_SIZE;
-
-        transform.localScale = new Vector3(size, size);
-
-        int sizeDisplay = (int)(size * 100);
-        txtSize.text = sizeDisplay.ToString();
     }
 
     public override void Eat(Cake whatToEat)
