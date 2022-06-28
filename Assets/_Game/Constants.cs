@@ -12,4 +12,10 @@ public static class Constants
     public const float DECREASE_STAMINA_SPEED = 1f;
     public const float PLAYER_SPEED = 2f;
     public const float PLAYER_DASH_SPEED_RATIO = 2f;
+    public const float MIN_PLAYER_SIZE = 0.3f;
+    public const float MAX_PLAYER_SIZE = 0.5f;
+
+    //camera
+    public const float CAMERA_MIN_SIZE = 2.5f;
+    public const float CAMERA_MAX_SIZE = 5f;
 }

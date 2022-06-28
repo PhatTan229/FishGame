@@ -8,13 +8,13 @@ public class PlayerController : Cake
 {
     public float Stamina => stamina;
 
-    private SpriteRenderer playerAnim;
+    private Animator playerAnim;
     private Joystick joystick;
     private Rigidbody2D rb;
     private Camera mainCamera;
     private TextMeshPro txtSize;
 
-    public Vector2 lastDirection;
+    private Vector2 lastDirection;
 
     float cameraWidth;
     float cameraHeight;
@@ -23,7 +23,7 @@ public class PlayerController : Cake
 
     private void Start()
     {
-        playerAnim = gameObject.GetChildComponent<SpriteRenderer>("playerAnim");
+        playerAnim = gameObject.GetChildComponent<Animator>("skeletonAnim");
         rb = GetComponent<Rigidbody2D>();
         joystick = FindObjectOfType<Joystick>();
         txtSize = transform.GetChild(0).GetComponent<TextMeshPro>();
@@ -31,9 +31,10 @@ public class PlayerController : Cake
         cameraHeight = mainCamera.orthographicSize;
         cameraWidth = cameraHeight * mainCamera.aspect;
 
-        size = 0.3f;
-        txtSize.text = size.ToString();
-        transform.localScale = new Vector3(size, size);
+        size = Constants.MIN_PLAYER_SIZE;
+        IncreaseSize(0);
+        //txtSize.text = size.ToString();
+        //transform.localScale = new Vector3(size, size);
     }
 
     void Update()
@@ -43,9 +44,9 @@ public class PlayerController : Cake
 
     private void Move()
     {
-        float x = Mathf.Clamp(transform.position.x, -cameraWidth, cameraWidth);
-        float y = Mathf.Clamp(transform.position.y, -cameraHeight, cameraHeight);
-        transform.position = new Vector3(x, y);
+        //float x = Mathf.Clamp(transform.position.x, -cameraWidth, cameraWidth);
+        //float y = Mathf.Clamp(transform.position.y, -cameraHeight, cameraHeight);
+        //transform.position = new Vector3(x, y);
 
         if (isDashing)
         {
@@ -65,28 +66,36 @@ public class PlayerController : Cake
             lastDirection = joystick.Direction;
         }
         CheckFacing();
-        
     }
 
     public void EatCandy(Food food)
     {
-        size += food.stepSize;
-        transform.localScale = new Vector3(size, size);
         stamina += 1f;
-        txtSize.text = size.ToString();
+        IncreaseSize(food.stepSize);
     }
 
     public void EatOtherCake(Enemy otherCake)
     {
         if (size >= otherCake.Size)
         {
-            size += otherCake.Size / 4;
-            transform.localScale = new Vector3(size, size);
-            txtSize.text = size.ToString();
+            IncreaseSize(otherCake.Size / 4);
         } else
         {
             Die();
         }
+    }
+
+    public void IncreaseSize(float increase)
+    {
+        size += increase;
+
+        if (size > Constants.MAX_PLAYER_SIZE) size = Constants.MAX_PLAYER_SIZE;
+
+        transform.localScale = new Vector3(size, size);
+
+        float ratio = size / Constants.MAX_PLAYER_SIZE;
+        float cameraSize = Mathf.Lerp(Constants.CAMERA_MIN_SIZE, Constants.CAMERA_MAX_SIZE, ratio);
+        mainCamera.orthographicSize = cameraSize;
     }
 
     public void Die()

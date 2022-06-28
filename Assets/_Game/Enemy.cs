@@ -11,56 +11,61 @@ public class Enemy : Cake
 {
     private SpriteRenderer sprite;
     private Vector2 destination;
-    [SerializeField] Animator anim;
-    TextMeshPro txtSize;
+
     float speed = Constants.PLAYER_SPEED;
     float stepSize;
     float spawnTime;
+    float activeTime;
+
+    Animator anim;
+    TextMeshPro txtSize;
+    TextMeshPro txtName;
+    PlayerController player;
+
+    private void Awake()
+    {
+        sprite = GetComponent<SpriteRenderer>();
+        anim = gameObject.GetChildComponent<Animator>("skeletonAnim");
+        txtName = gameObject.GetChildComponent<TextMeshPro>("txtName");
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+    }
 
     void Start()
     {
-        sprite = GetComponent<SpriteRenderer>();
-        //txtSize = transform.GetChild(0).GetComponent<TextMeshPro>();
-        anim = GetComponent<Animator>();
-        ChangeDestination();
-
-        size = Random.Range(1f, 2f);
+        activeTime = Random.Range(0f, 1f);
+        size = Constants.MIN_PLAYER_SIZE;
         transform.localScale = new Vector3(size, size);
-        //txtSize.text = size.ToString();
+        anim.enabled = false;
+        ChangeDestination();
     }
     
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
+        if (collision.gameObject == player)
         {
-            if (collision.TryGetComponent<PlayerController>(out var player))
+            if (player.Size >= size)
             {
-                if (player.Size >= size)
-                {
-                    player.EatOtherCake(this);
-                    StartCoroutine(ResetPosition());
-                }
-                else
-                {
-                    anim.SetTrigger("Attack");
-                    player.Die();                   
-                }
+                player.EatOtherCake(this);
+                StartCoroutine(ResetPosition());
+            }
+            else
+            {
+                anim.SetTrigger("Attack");
+                player.Die();
             }
         }
     }
 
     void Update()
     {
-        Move();
+        anim.enabled = Time.time > activeTime;
+
+        transform.position = Vector2.MoveTowards(transform.position, destination, speed * Time.deltaTime);
+
         if (Vector2.Distance(transform.position, destination) <= 0)
         {
             ChangeDestination();
         }
-    }
-
-    private void Move()
-    {
-        transform.position = Vector2.MoveTowards(transform.position, destination, speed * Time.deltaTime);
     }
 
     private void ChangeDestination()
@@ -95,7 +100,7 @@ public class Enemy : Cake
     }
     protected override void CheckFacing()
     {
-        var facing = transform.rotation;
+        var facing = anim.transform.rotation;
         if(destination.x > transform.position.x)
         {
             facing.y = 0;
@@ -104,6 +109,6 @@ public class Enemy : Cake
         {
             facing.y = 180;
         }
-        transform.rotation = facing;
+        anim.transform.rotation = facing;
     }
 }
