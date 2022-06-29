@@ -8,6 +8,7 @@ public class Spawner : MonoBehaviour
 
     float nextSpawnWall;
     float nextSpawnPuppetPoint;
+    float nextSpawnPath;
 
     private void Start()
     {
@@ -27,6 +28,12 @@ public class Spawner : MonoBehaviour
         {
             nextSpawnPuppetPoint += Random.Range(10f, 12f);
             ObjectPool.Instance.GetGameObjectFromPool("savePlayerPuppet", new Vector3(6, Random.Range(-1f,1f)));
+        }        
+        
+        if (Time.time > nextSpawnPath)
+        {
+            nextSpawnPath += 1f;
+            ObjectPool.Instance.GetGameObjectFromPool("Path/Path " + Random.Range(0,5), new Vector3(6, 0));
         }
     }
 }

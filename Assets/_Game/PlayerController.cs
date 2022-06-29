@@ -57,6 +57,8 @@ public class PlayerController : Cake
             }
         } else
         {
+            stamina += Constants.DECREASE_STAMINA_SPEED * Time.deltaTime;
+            if (stamina > Constants.MAX_STAMINA) stamina = Constants.MAX_STAMINA;
             rb.velocity = joystick.Direction.normalized * Constants.PLAYER_SPEED;
         }
 

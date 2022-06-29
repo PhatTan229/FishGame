@@ -11,7 +11,7 @@ public static class Constants
     public const float DASH_FORCE = 100;
     public const float MAX_STAMINA = 5;
     public const float DECREASE_STAMINA_SPEED = 1f;
-    public const float PLAYER_SPEED = 4f;
+    public const float PLAYER_SPEED = 1.5f;
     public const float PLAYER_DASH_SPEED_RATIO = 2f;
     public const float MIN_PLAYER_SIZE = 0.3f;
     public const float MAX_PLAYER_SIZE = 0.5f;
