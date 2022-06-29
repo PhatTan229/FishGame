@@ -8,15 +8,15 @@ public class Food : Cake
     [SerializeField] private float spawnTime;
     public float stepSize;
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
-        {
-            collision.TryGetComponent<PlayerController>(out var player);
-            player.EatCandy(this);
-            StartCoroutine(ResetPosition());
-        }
-    }
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
+    //    {
+    //        collision.TryGetComponent<PlayerController>(out var player);
+    //        player.EatCandy(this);
+    //        StartCoroutine(ResetPosition());
+    //    }
+    //}
     private IEnumerator ResetPosition()
     {
         var temptStepSize = stepSize;

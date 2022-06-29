@@ -67,22 +67,22 @@ public class PlayerController : Cake
         CheckFacing();
     }
 
-    public void EatCandy(Food food)
-    {
-        stamina += 1f;
-        IncreaseSize(food.stepSize);
-    }
+    //public void EatCandy(Food food)
+    //{
+    //    stamina += 1f;
+    //    IncreaseSize(food.stepSize);
+    //}
 
-    public void EatOtherCake(Enemy otherCake)
-    {
-        if (size >= otherCake.Size)
-        {
-            IncreaseSize(otherCake.Size / 4);
-        } else
-        {
-            Die();
-        }
-    }
+    //public void EatOtherCake(Enemy otherCake)
+    //{
+    //    if (size >= otherCake.Size)
+    //    {
+    //        IncreaseSize(otherCake.Size / 4);
+    //    } else
+    //    {
+    //        Die();
+    //    }
+    //}
 
     public void Die()
     {
@@ -117,6 +117,18 @@ public class PlayerController : Cake
             facing.y = 0;
         }
         playerAnim.transform.rotation = facing;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        var cake = collision.GetComponent<Cake>();
+        if (cake != null) Eat(cake);
+
+        //if (collision.CompareTag(Constants.TAG_CAKE))
+        //{
+        //    var cake = collision.GetComponent<Cake>();
+        //    Eat(cake);
+        //}
     }
 
     public override void Eat(Cake whatToEat)
