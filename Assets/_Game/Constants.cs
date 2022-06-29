@@ -5,6 +5,7 @@ using UnityEngine;
 public static class Constants
 {
     public const float ONLINE_MATCHING_TIME = 3f;
+    public const float GAMEPLAY_SCROLL_SPEED = 5f;
 
     //player
     public const float DASH_FORCE = 100;

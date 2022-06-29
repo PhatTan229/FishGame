@@ -4,55 +4,22 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
-    [SerializeField] private GameObject foodPrefab;
-    [SerializeField] private int maxFoodInScreen;
+    [SerializeField] List<GameObject> walls;
 
-    [SerializeField] private GameObject bigEnemyPrefabs;
-    [SerializeField] private GameObject smallEnemyPrefabs;
-    [SerializeField] private int maxEnemyInScreen;
+    float nextSpawnWall;
 
-    void Start()
+    private void Start()
     {
-        SpawnFood();
-        SpawnEnemy();
-        Destroy(gameObject);
+        
     }
 
-    private void SpawnFood()
+    private void Update()
     {
-        for (int i = 0; i < maxFoodInScreen; i++)
+        if (Time.time > nextSpawnWall)
         {
-            //float spawnY = Random.Range
-            //        (Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).y, Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height)).y);
-            //float spawnX = Random.Range
-            //    (Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).x, Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x);
-
-            float spawnX = Random.Range(-20, 20);
-            float spawnY = Random.Range(-20, 20);
-
-            Vector2 spawnPosition = new Vector2(spawnX, spawnY);
-
-            Instantiate(foodPrefab, spawnPosition, Quaternion.identity);
-        }
-    }
-
-    private void SpawnEnemy()
-    {
-        for (int i = 0; i < maxEnemyInScreen; i++)
-        {
-            //float spawnY = Random.Range
-            //        (Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).y, Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height)).y);
-            //float spawnX = Random.Range
-            //    (Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).x, Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x);
-
-            float spawnX = Random.Range(-20, 20);
-            float spawnY = Random.Range(-20, 20);
-
-            Vector2 spawnPosition = new Vector2(spawnX, spawnY);
-            var enemyToSpawn = Random.Range(1, 3);
-            if(enemyToSpawn == 1) Instantiate(bigEnemyPrefabs, spawnPosition, Quaternion.identity);
-            else Instantiate(smallEnemyPrefabs, spawnPosition, Quaternion.identity);
-
+            nextSpawnWall += Random.Range(2f, 3f);
+            string objectName = Random.Range(0, 2) == 0 ? "up" : "down";
+            ObjectPool.Instance.GetGameObjectFromPool(objectName, new Vector3(6, 0));
         }
     }
 }
