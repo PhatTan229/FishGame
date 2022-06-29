@@ -65,6 +65,9 @@ public class PlayerController : Cake
             lastDirection = joystick.Direction;
         }
         CheckFacing();
+
+        if (transform.position.x < -6f)
+            Die();
     }
 
     //public void EatCandy(Food food)
